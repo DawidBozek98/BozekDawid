@@ -1,3 +1,4 @@
+
 name: "Test and Scan"
 on:
   push:
@@ -7,14 +8,14 @@ on:
 jobs:
   checkout:
     runs-on: ubuntu-latest
-    strategy: 
+    strategy:
       matrix:
         service: [tasks-api, title-normalizer] # ${{matrix.service}}
         python-version: ["3.10", "3.11", "3.12"] # ${{matrix.python-version}}
     steps:
       - name: 'Test and Scan'
         uses: actions/checkout@v7
-     
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v7
         with:
@@ -27,5 +28,12 @@ jobs:
           pip install pytest
 
       - name: Run tasks-api tests
-        run: python -m pytest services/${{matrix.service}}
-    
+        run: python -m pytest services/${{matrix.service}} --junitxml=junit/test-results-${{matrix.service}}-${{matrix.python-version}}.xml
+
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.service }}-test-report-${{ matrix.python-version }}
+          path: junit/test-results-${{ matrix.service }}-${{ matrix.python-version }}.xml
+          if-no-files-found: warn
+        if: ${{ always() }}
