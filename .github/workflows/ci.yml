@@ -28,10 +28,10 @@ jobs:
           pip install pytest
 
       - name: Run tasks-api tests
-        run: python -m pytest services/${{matrix.service}} --junitxml=junit/test-results-${{matrix.service}}-${{matrix.python-version}}.xml
-
+        run: python -rA pytest services/${{matrix.service}} --junitxml=junit/test-results-${{matrix.service}}-${{matrix.python-version}}.xml
+      - shell: bash
       - name: Upload pytest test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.service }}-test-report-${{ matrix.python-version }}
           path: junit/test-results-${{ matrix.service }}-${{ matrix.python-version }}.xml
