@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v7
         with:
-          python-version: "${{python-version}}"
+          python-version: "${{matrix.python-version}}"
 
       - name: Install tasks-api dependencies
         run: |
@@ -27,5 +27,5 @@ jobs:
           pip install pytest
 
       - name: Run tasks-api tests
-        run: python pytest services/${{matrix.service}}
+        run: python -m pytest services/${{matrix.service}}
     
